@@ -12,6 +12,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.example.wanderwall.ui.theme.WanderwallTheme
@@ -38,8 +41,19 @@ class MainActivity : ComponentActivity() {
         val sharedPreferences = getSharedPreferences("settings", Context.MODE_PRIVATE)
         sharedPreferences.edit().putInt("interval", interval).putString("url", url).apply()
 
-        val workRequest = PeriodicWorkRequestBuilder<WallpaperWorker>(interval.toLong(), TimeUnit.MINUTES)
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
+
+        val workRequest = PeriodicWorkRequestBuilder<WallpaperWorker>(interval.toLong(), TimeUnit.HOURS)
+            .setConstraints(constraints)
+            .build()
+
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+            "WallpaperWorker",
+            ExistingPeriodicWorkPolicy.REPLACE,
+            workRequest
+        )
 
         WorkManager.getInstance(this).enqueue(workRequest)
     }
@@ -47,13 +61,13 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun SettingsScreen(modifier: Modifier = Modifier, onApplySettings: (Int, String) -> Unit) {
-    var interval by remember { mutableStateOf(1) }
+    var interval by remember { mutableStateOf(24) }
     var url by remember { mutableStateOf("https://hacklog.de/test.png") }
     var inputInterval by remember { mutableStateOf(interval.toString()) }
     var inputUrl by remember { mutableStateOf(url) }
 
     Column(modifier = modifier.padding(16.dp)) {
-        Text(text = "Settings", style = MaterialTheme.typography.headlineMedium, modifier = Modifier.padding(bottom = 16.dp))
+        Text(text = "WanderWall Settings", style = MaterialTheme.typography.headlineMedium, modifier = Modifier.padding(bottom = 16.dp))
 
         OutlinedTextField(
             value = inputInterval,
