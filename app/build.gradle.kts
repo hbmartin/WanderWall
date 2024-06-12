@@ -59,6 +59,7 @@ dependencies {
     implementation(libs.work.runtime.ktx)
     implementation(libs.androidx.material3)
     implementation(libs.glide)
+    implementation(libs.onyxsdkDevice)
     kapt(libs.glide.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -11,6 +11,8 @@ composeBom = "2023.08.00"
 workRuntimeKtx = "2.7.1"
 glide = "4.12.0"
 glideCompiler = "4.12.0"
+onyxsdkDevice = "1.1.11"
+onyxsdkPen = "1.2.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -30,6 +32,8 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workRuntimeKtx" }
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 glide-compiler = { group = "com.github.bumptech.glide", name = "compiler", version.ref = "glideCompiler" }
+onyxsdkDevice = { group = "com.onyx.android.sdk", name = "onyxsdk-device", version.ref = "onyxsdkDevice" }
+onyxsdkPen = { group = "com.onyx.android.sdk", name = "onyxsdk-pen", version.ref = "onyxsdkPen" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

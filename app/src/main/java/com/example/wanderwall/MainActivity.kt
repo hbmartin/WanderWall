@@ -29,7 +29,7 @@ class MainActivity : ComponentActivity() {
                         name = "Android",
                         modifier = Modifier.padding(innerPadding)
                     ) {
-                        scheduleWallpaperUpdate(6)
+                        scheduleWallpaperUpdate(1)
                     }
                 }
             }

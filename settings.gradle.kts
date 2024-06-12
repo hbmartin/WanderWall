@@ -9,6 +9,13 @@ pluginManagement {
         }
         mavenCentral()
         gradlePluginPortal()
+        maven {
+            url = uri("https://repo.boox.com/repository/proxy-public/")
+        }
+        maven {
+            url = uri("https://repo.boox.com/repository/maven-public/")
+        }
+
     }
 }
 dependencyResolutionManagement {
@@ -16,6 +23,12 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven {
+            url = uri("https://repo.boox.com/repository/proxy-public/")
+        }
+        maven {
+            url = uri("https://repo.boox.com/repository/maven-public/")
+        }
     }
 }
 
