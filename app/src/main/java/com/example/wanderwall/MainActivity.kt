@@ -1,15 +1,14 @@
 package com.example.wanderwall
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -25,39 +24,65 @@ class MainActivity : ComponentActivity() {
         setContent {
             WanderwallTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
+                    SettingsScreen(
                         modifier = Modifier.padding(innerPadding)
-                    ) {
-                        scheduleWallpaperUpdate(1)
+                    ) { interval, url ->
+                        scheduleWallpaperUpdate(interval, url)
                     }
                 }
             }
         }
     }
 
-    private fun scheduleWallpaperUpdate(hours: Int) {
-        val wallpaperWorkRequest = PeriodicWorkRequestBuilder<WallpaperWorker>(hours.toLong(), TimeUnit.MINUTES)
+    private fun scheduleWallpaperUpdate(interval: Int, url: String) {
+        val sharedPreferences = getSharedPreferences("settings", Context.MODE_PRIVATE)
+        sharedPreferences.edit().putInt("interval", interval).putString("url", url).apply()
+
+        val workRequest = PeriodicWorkRequestBuilder<WallpaperWorker>(interval.toLong(), TimeUnit.MINUTES)
             .build()
-        WorkManager.getInstance(this).enqueue(wallpaperWorkRequest)
+
+        WorkManager.getInstance(this).enqueue(workRequest)
     }
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier, onButtonClick: () -> Unit) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier.padding(bottom = 16.dp)
-    )
-    Button(onClick = onButtonClick) {
-        Text(text = "Set Wallpaper")
+fun SettingsScreen(modifier: Modifier = Modifier, onApplySettings: (Int, String) -> Unit) {
+    var interval by remember { mutableStateOf(1) }
+    var url by remember { mutableStateOf("https://hacklog.de/test.png") }
+    var inputInterval by remember { mutableStateOf(interval.toString()) }
+    var inputUrl by remember { mutableStateOf(url) }
+
+    Column(modifier = modifier.padding(16.dp)) {
+        Text(text = "Settings", style = MaterialTheme.typography.headlineMedium, modifier = Modifier.padding(bottom = 16.dp))
+
+        OutlinedTextField(
+            value = inputInterval,
+            onValueChange = { inputInterval = it },
+            label = { Text("Interval (hours)") },
+            modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+        )
+
+        OutlinedTextField(
+            value = inputUrl,
+            onValueChange = { inputUrl = it },
+            label = { Text("Image URL") },
+            modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+        )
+
+        Button(onClick = {
+            interval = inputInterval.toIntOrNull() ?: 1
+            url = inputUrl
+            onApplySettings(interval, url)
+        }, modifier = Modifier.align(Alignment.End)) {
+            Text("Apply")
+        }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun SettingsScreenPreview() {
     WanderwallTheme {
-        Greeting("Android", onButtonClick = {})
+        SettingsScreen(onApplySettings = { _, _ -> })
     }
 }

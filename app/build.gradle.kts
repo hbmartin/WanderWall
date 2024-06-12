@@ -60,6 +60,8 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.glide)
     implementation(libs.onyxsdkDevice)
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.squareup.okio:okio:3.9.0")
     kapt(libs.glide.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
